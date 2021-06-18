@@ -38,38 +38,6 @@ export function getRandomNearLocation(
 	};
 }
 
-// export async function getRandomStreetView(
-// 	values: LatLangData,
-// ) {
-// 	async function TryRandomLocation(callback) {
-// 		const streetViewService =
-// 			new google.maps.StreetViewService();
-// 		const lat = values.lat;
-// 		const lng = values.lng;
-// 		const latLng = new google.maps.LatLng(lat, lng);
-// 		console.log(latLng);
-// 		await streetViewService.getPanorama(
-// 			{
-// 				location: latLng,
-// 				radius: 1500000,
-// 				preference: google.maps.StreetViewPreference.BEST,
-// 				source: google.maps.StreetViewSource.DEFAULT,
-// 			},
-// 			callback,
-// 		);
-// 	}
-// 	function HandleCallback(data, status) {
-// 		if (status == 'OK') {
-// 			console.log(data.location.latLng);
-// 			return data.location.latLng;
-// 		} else {
-// 			console.log(data.location);
-// 			TryRandomLocation(HandleCallback);
-// 		}
-// 	}
-// 	TryRandomLocation(HandleCallback);
-// }
-
 export async function getRandomStreetView(
 	values: LatLangData,
 ) {
