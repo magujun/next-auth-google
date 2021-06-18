@@ -48,8 +48,7 @@ export async function getRandomStreetView() {
 			Math.random() * 360 - 179,
 		);
 		radius = radius * 10;
-		console.log(latLng.lat(), latLng.lng());
-		await streetViewService.getPanorama(
+		const sv = await streetViewService.getPanorama(
 			{
 				location: latLng,
 				radius: radius,
@@ -58,6 +57,7 @@ export async function getRandomStreetView() {
 			},
 			callback,
 		);
+		return sv.data.location.latLng;
 	}
 	function HandleCallback(data, status) {
 		if (status === 'OK') {
@@ -67,7 +67,9 @@ export async function getRandomStreetView() {
 		}
 		FindRandomLocation(HandleCallback);
 	}
-	return await FindRandomLocation(HandleCallback);
+	const res = FindRandomLocation(HandleCallback);
+	console.log(res);
+	return res;
 }
 
 export function getDistanceInMeters(
