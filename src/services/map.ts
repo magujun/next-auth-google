@@ -39,15 +39,16 @@ export function getRandomNearLocation(
 }
 
 export async function getRandomStreetView() {
-	let radius = 5000;
+	let radius = 50000;
 	async function FindRandomLocation(callback) {
 		const streetViewService =
 			new google.maps.StreetViewService();
 		const latLng = new google.maps.LatLng(
-			Math.floor(Math.random() * 181) - 90,
-			Math.floor(Math.random() * 361) - 180,
+			Math.random() * 180 - 89,
+			Math.random() * 360 - 179,
 		);
 		radius = radius * 10;
+		console.log(latLng.lat(), latLng.lng());
 		await streetViewService.getPanorama(
 			{
 				location: latLng,
