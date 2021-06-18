@@ -38,28 +38,18 @@ export function getRandomNearLocation(
 	};
 }
 
-export async function getRandomStreetView(
-	values: LatLangData,
-) {
-	async function TryRandomLocation(callback) {
+export async function getRandomStreetView() {
+	async function FindRandomLocation(callback) {
 		const streetViewService =
 			new google.maps.StreetViewService();
 		const latLng = new google.maps.LatLng(
-			values.lat,
-			values.lng,
+			Math.random() * 90 - 90,
+			Math.random() * 180 - 180,
 		);
-
-		const randomFactor = Math.random();
-		const randomMaxDistance =
-			values.maxDistance *
-			(randomFactor > 0.25 && randomFactor < 0.75
-				? randomFactor
-				: 1);
-
 		await streetViewService.getPanorama(
 			{
 				location: latLng,
-				radius: randomMaxDistance,
+				radius: 50000,
 				preference: google.maps.StreetViewPreference.BEST,
 				source: google.maps.StreetViewSource.DEFAULT,
 			},
@@ -67,14 +57,14 @@ export async function getRandomStreetView(
 		);
 	}
 	function HandleCallback(data, status) {
-		if (status != 'OK') {
-			TryRandomLocation(HandleCallback);
+		if (status == 'OK') {
+			const response = data.location.latLng;
+			console.log(response.lat(), response.lng(), status);
+			return response;
 		}
-		const response = data.location.latLng;
-		console.log(response.lat(), response.lng(), status);
-		return data.location.latLng;
+		FindRandomLocation(HandleCallback);
 	}
-	TryRandomLocation(HandleCallback);
+	return await FindRandomLocation(HandleCallback);
 }
 
 // export async function getRandomStreetView(

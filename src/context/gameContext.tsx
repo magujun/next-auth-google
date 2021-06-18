@@ -10,6 +10,7 @@ import {
 	getRandomNearLocation,
 	getRandomStartPoint,
 	getRandomStreetView,
+	HandleCallback,
 } from '../services/map';
 
 type Point = {
@@ -57,15 +58,16 @@ export const GameProvider = ({
 		try {
 			setHasStart(false);
 
-			const random = await getRandomStartPoint();
-			const point = await getRandomStreetView({
-				lat: random.lat,
-				lng: random.lng,
-				maxDistance: 1000000,
-			});
+			// const random = await getRandomStartPoint();
+			const point = await getRandomStreetView();
+			//   {
+			// 	lat: random.lat,
+			// 	lng: random.lng,
+			// 	maxDistance: 10000,
+			// });
 			const streetPoint = {
-				lat: point.lat() ?? random.lat,
-				lng: point.lng() ?? random.lng,
+				lat: point.lat(),
+				lng: point.lng(),
 			};
 
 			// console.log(streetPoint);
