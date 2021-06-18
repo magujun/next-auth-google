@@ -39,17 +39,19 @@ export function getRandomNearLocation(
 }
 
 export async function getRandomStreetView() {
+	let radius = 5000;
 	async function FindRandomLocation(callback) {
 		const streetViewService =
 			new google.maps.StreetViewService();
 		const latLng = new google.maps.LatLng(
-			Math.random() * 90 - 90,
-			Math.random() * 180 - 180,
+			Math.floor(Math.random() * 181) - 90,
+			Math.floor(Math.random() * 361) - 180,
 		);
+		radius = radius * 10;
 		await streetViewService.getPanorama(
 			{
 				location: latLng,
-				radius: 50000,
+				radius: radius,
 				preference: google.maps.StreetViewPreference.BEST,
 				source: google.maps.StreetViewSource.DEFAULT,
 			},
@@ -57,7 +59,7 @@ export async function getRandomStreetView() {
 		);
 	}
 	function HandleCallback(data, status) {
-		if (status == 'OK') {
+		if (status === 'OK') {
 			const response = data.location.latLng;
 			console.log(response.lat(), response.lng(), status);
 			return response;
@@ -66,48 +68,6 @@ export async function getRandomStreetView() {
 	}
 	return await FindRandomLocation(HandleCallback);
 }
-
-// export async function getRandomStreetView(
-// 	values: LatLangData,
-// ) {
-// 	try {
-// 		const streetViewService =
-// 			new google.maps.StreetViewService();
-// 		const latLng = new google.maps.LatLng(
-// 			values.lat,
-// 			values.lng,
-// 		);
-// 		const randomFactor = Math.random();
-
-// 		const randomMaxDistance =
-// 			values.maxDistance *
-// 			(randomFactor > 0.3 && randomFactor < 0.7
-// 				? randomFactor
-// 				: 1);
-
-// 		const response = await streetViewService.getPanorama({
-// 			location: latLng,
-// 			radius: randomMaxDistance,
-// 			preference: google.maps.StreetViewPreference.BEST,
-// 			source: google.maps.StreetViewSource.DEFAULT,
-// 		});
-
-// 		if (response?.data.location.latLng.lat()) {
-// 			console.log(
-// 				response?.data.location.latLng.lat(),
-// 				response?.data.location.latLng.lng(),
-// 			);
-// 			return response?.data.location.latLng;
-// 		} else {
-// 			return new google.maps.LatLng(
-// 				-23.9330793,
-// 				-46.3252711,
-// 			);
-// 		}
-// 	} catch {
-// 		return new google.maps.LatLng(-23.9330793, -46.3252711);
-// 	}
-// }
 
 export function getDistanceInMeters(
 	origin: Omit<LatLangData, 'maxDistance'>,
@@ -121,19 +81,10 @@ export function getDistanceInMeters(
 	//   new google.maps.LatLng(destination)
 	// );
 }
-
 export async function getRandomStartPoint() {
-	const locations = [
-		{ lat: 52.47876324394502, lng: -1.913465674644272 },
-		{ lat: 13.76332743683398, lng: 100.4917797885622 },
-		{ lat: -23.9330793, lng: -46.3252711 },
-		{ lat: 45.85456252178256, lng: 8.406235206880227 },
-		{ lat: 47.91794611735139, lng: 106.9353424093317 },
-		{ lat: 14.6706902862828, lng: -17.39964976387397 },
-		{ lat: 25.19737753354876, lng: 55.27443320656716 },
-		{ lat: 34.3823720098183, lng: 7.933148797380197 },
-		{ lat: 46.29434507084763, lng: 11.84828825022669 },
-	];
-
-	return locations[getRandomInt(0, locations.length - 1)];
+	const latLng = new google.maps.LatLng(
+		Math.random() * 80 - 80,
+		Math.random() * 180 - 180,
+	);
+	return latLng;
 }
