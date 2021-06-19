@@ -41,7 +41,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
 		try {
 			setHasStart(false);
 			// const googleStreetViewStaticApiKey = process.env.GOOGLE_STREETVIEWSTATIC_API_KEY;
-			const googleStreetViewStaticApiKey = 'AIzaSyABEdQv2McugapCRtNCc4oEx_q-c67C18A';
+			const googleStreetViewStaticApiKey = '';
 			const point = await getRandomStreetView(googleStreetViewStaticApiKey);
 			console.log('Point: ', point);
 			const streetPoint = {
