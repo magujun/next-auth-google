@@ -1,21 +1,15 @@
 import haversineDistance from 'haversine-distance';
+import axios from 'axios';
 
 export const DEFAULT_LOCATION = {
-	lat: 45.85456252178256,
-	lng: 8.406235206880227,
+	lat: 0.0,
+	lng: 0.0,
 };
-
 export type LatLangData = {
 	lat: number;
 	lng: number;
 	maxDistance: number;
 };
-
-function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 export function getRandomNearLocation(
 	values: Omit<LatLangData, 'maxDistance'>,
@@ -38,56 +32,43 @@ export function getRandomNearLocation(
 	};
 }
 
-export async function getRandomStreetView() {
-	let radius = 50000;
-	async function FindRandomLocation(callback) {
-		const streetViewService =
-			new google.maps.StreetViewService();
-		const latLng = new google.maps.LatLng(
-			Math.random() * 180 - 89,
-			Math.random() * 360 - 179,
-		);
-		radius = radius * 10;
-		const sv = await streetViewService.getPanorama(
-			{
-				location: latLng,
-				radius: radius,
-				preference: google.maps.StreetViewPreference.BEST,
-				source: google.maps.StreetViewSource.DEFAULT,
-			},
-			callback,
-		);
-		return sv.data.location.latLng;
-	}
-	function HandleCallback(data, status) {
-		if (status === 'OK') {
-			const response = data.location.latLng;
-			console.log(response.lat(), response.lng(), status);
-			return response;
+interface StreetViewAPI {
+	data: {
+		copyright: string;
+		date: string;
+		location: {
+			lat: number;
+			lng: number;
+		};
+		pano_id: string;
+		status: string;
+	};
+}
+
+export async function getRandomStreetView(googleStreetViewStaticApiKey: string) {
+	const coord = [Math.random() * 180 - 89, Math.random() * 360 - 179];
+	console.log('Test coordinates: ', coord);
+	const api_key = googleStreetViewStaticApiKey;
+	console.log('API KEY: ', api_key);
+	const res: StreetViewAPI = await axios.get(
+		`https://maps.googleapis.com/maps/api/streetview/metadata?location=${[
+			...coord,
+		]}&key=${api_key}&radius=50000&source=outdoor`,
+	);
+	const response = res.data;
+	console.log('Response: ', response);
+	if (response.status === 'OK') {
+		if (response.copyright.includes('Google')) {
+			console.log('Response: ', response.location);
+			return response.location;
 		}
-		FindRandomLocation(HandleCallback);
 	}
-	const res = FindRandomLocation(HandleCallback);
-	console.log(res);
-	return res;
+	return await getRandomStreetView(googleStreetViewStaticApiKey);
 }
 
 export function getDistanceInMeters(
 	origin: Omit<LatLangData, 'maxDistance'>,
 	destination: Omit<LatLangData, 'maxDistance'>,
 ): number {
-	return origin && destination
-		? haversineDistance(origin, destination)
-		: 0;
-	// return google.maps.geometry.spherical.computeDistanceBetween(
-	//   new google.maps.LatLng(origin),
-	//   new google.maps.LatLng(destination)
-	// );
-}
-export async function getRandomStartPoint() {
-	const latLng = new google.maps.LatLng(
-		Math.random() * 80 - 80,
-		Math.random() * 180 - 180,
-	);
-	return latLng;
+	return origin && destination ? haversineDistance(origin, destination) : 0;
 }

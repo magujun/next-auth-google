@@ -1,14 +1,10 @@
-import {
-	GoogleMap,
-	LoadScriptNext,
-	Marker,
-} from '@react-google-maps/api';
+import { GoogleMap, LoadScriptNext, Marker } from '@react-google-maps/api';
 import React from 'react';
 import { useGameContext } from '../../context/gameContext';
 
 const mapContainerStyle = {
-	height: '400px',
-	width: '800px',
+	height: '300px',
+	width: '450px',
 };
 
 // const initialPosition = getRandomStartPoint();
@@ -25,17 +21,9 @@ type Position = {
 	lng: number;
 };
 
-export default function Map({
-	googleMapsApiKey,
-}: MapProps) {
-	const {
-		setupGame,
-		sendGuessPoint,
-		startPoint,
-		goalPoint,
-		distance,
-		guessPoint,
-	} = useGameContext();
+export default function Map({ googleMapsApiKey }: MapProps) {
+	const { setupGame, sendGuessPoint, startPoint, goalPoint, distance, guessPoint } =
+		useGameContext();
 
 	const handleMapClick = (e: any) => {
 		const { latLng } = e;
@@ -48,7 +36,7 @@ export default function Map({
 		sendGuessPoint(destination);
 	};
 
-	const handleMapLoad = (maker: google.maps.Marker) => {
+	const handleMapLoad = (map: google.maps.Map) => {
 		setupGame();
 	};
 
@@ -59,17 +47,15 @@ export default function Map({
 				<GoogleMap
 					mapContainerStyle={mapContainerStyle}
 					center={startPoint}
-					zoom={15}
+					zoom={1}
 					onClick={handleMapClick}
 					clickableIcons={false}
 					options={{
 						clickableIcons: false,
 						disableDefaultUI: true,
-					}}>
-					<Marker
-						position={goalPoint}
-						onLoad={handleMapLoad}
-					/>
+					}}
+					onLoad={handleMapLoad}>
+					<Marker position={goalPoint} />
 					<Marker position={guessPoint} />
 				</GoogleMap>
 			</LoadScriptNext>

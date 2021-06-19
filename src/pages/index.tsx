@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-	useSession,
-	signIn,
-	signOut,
-} from 'next-auth/client';
+import { useSession, signIn, signOut } from 'next-auth/client';
 import Map from '../components/map';
 import StreetMap from '../components/streetmap';
 import { GetStaticProps } from 'next';
@@ -25,9 +21,7 @@ export function Login() {
 	return (
 		<>
 			Not signed in <br />
-			<button onClick={() => signIn('google')}>
-				Sign in
-			</button>
+			<button onClick={() => signIn('google')}>Sign in</button>
 		</>
 	);
 }
@@ -36,9 +30,7 @@ type HomeProps = {
 	googleMapsApiKey: string;
 };
 
-export default function Home({
-	googleMapsApiKey,
-}: HomeProps) {
+export default function Home({ googleMapsApiKey }: HomeProps) {
 	return (
 		<GameProvider>
 			<>
@@ -50,19 +42,14 @@ export default function Home({
 	);
 }
 
-const removeUndefinedForNextJsSerializing = <T,>(
-	props: T,
-): T =>
-	Object.fromEntries(
-		Object.entries(props).filter(
-			([, value]) => value !== undefined,
-		),
-	) as T;
+const removeUndefinedForNextJsSerializing = <T,>(props: T): T =>
+	Object.fromEntries(Object.entries(props).filter(([, value]) => value !== undefined)) as T;
 
 export const getStaticProps: GetStaticProps = async () => {
 	return {
 		props: removeUndefinedForNextJsSerializing({
 			googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+			googleStreetViewStaticApiKey: process.env.GOOGLE_STREETVIEWSTATIC_API_KEY,
 		}),
 	};
 };

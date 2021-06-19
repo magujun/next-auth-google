@@ -1,9 +1,4 @@
-import {
-	createContext,
-	ReactElement,
-	useContext,
-	useState,
-} from 'react';
+import { createContext, ReactElement, useContext, useState } from 'react';
 import {
 	DEFAULT_LOCATION,
 	getDistanceInMeters,
@@ -34,48 +29,34 @@ type GameProviderProps = {
 	children: ReactElement;
 };
 
-export const GameProvider = ({
-	children,
-}: GameProviderProps) => {
+export const GameProvider = ({ children }: GameProviderProps) => {
 	const [hasStart, setHasStart] = useState(false);
-	const [streetPoint, setStreetPoint] = useState(
-		DEFAULT_LOCATION as Point,
-	);
-	const [goalPoint, setGoalPoint] = useState(
-		DEFAULT_LOCATION as Point,
-	);
-	const [startPoint, setStartPoint] = useState(
-		DEFAULT_LOCATION as Point,
-	);
-	const [guessPoint, setGuessPoint] = useState(
-		DEFAULT_LOCATION as Point,
-	);
+	const [streetPoint, setStreetPoint] = useState(DEFAULT_LOCATION as Point);
+	const [goalPoint, setGoalPoint] = useState(DEFAULT_LOCATION as Point);
+	const [startPoint, setStartPoint] = useState(DEFAULT_LOCATION as Point);
+	const [guessPoint, setGuessPoint] = useState(DEFAULT_LOCATION as Point);
 	const [distance, setDistance] = useState(0);
 
 	const setupGame = async () => {
 		try {
 			setHasStart(false);
-
-			const point = await getRandomStreetView();
+			// const googleStreetViewStaticApiKey = process.env.GOOGLE_STREETVIEWSTATIC_API_KEY;
+			const googleStreetViewStaticApiKey = 'AIzaSyABEdQv2McugapCRtNCc4oEx_q-c67C18A';
+			const point = await getRandomStreetView(googleStreetViewStaticApiKey);
+			console.log('Point: ', point);
 			const streetPoint = {
-				lat: point.lat(),
-				lng: point.lng(),
+				lat: point.lat,
+				lng: point.lng,
 			};
 
 			if (streetPoint.lat) {
-				const nearPoint = getRandomNearLocation(
-					streetPoint,
-					100,
-				);
-
+				const nearPoint = getRandomNearLocation(streetPoint, 100);
 				setGoalPoint(nearPoint);
 				setStartPoint(streetPoint);
-				setGuessPoint(streetPoint);
+				setGuessPoint(guessPoint);
 
 				if (streetPoint.lat && nearPoint.lat)
-					setDistance(
-						getDistanceInMeters(streetPoint, nearPoint),
-					);
+					setDistance(getDistanceInMeters(streetPoint, nearPoint));
 			} else {
 				setGoalPoint(DEFAULT_LOCATION);
 				setStartPoint(DEFAULT_LOCATION);
@@ -87,8 +68,7 @@ export const GameProvider = ({
 
 	const sendGuessPoint = (point: Point) => {
 		setGuessPoint(point);
-		if (point && goalPoint)
-			setDistance(getDistanceInMeters(point, goalPoint));
+		if (point && goalPoint) setDistance(getDistanceInMeters(point, goalPoint));
 	};
 
 	const data = {
@@ -103,11 +83,7 @@ export const GameProvider = ({
 		setStreetPoint,
 	} as GameData;
 
-	return (
-		<GameContext.Provider value={data}>
-			{children}
-		</GameContext.Provider>
-	);
+	return <GameContext.Provider value={data}>{children}</GameContext.Provider>;
 };
 
 export const useGameContext = () => {
